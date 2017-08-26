@@ -15,8 +15,10 @@ This code has been adapted from my MSc thesis work at Imperial College (summer o
 
 The main function is kdrsdl.
 ```matlab
-function [A,B, R, L, E] = kdrsdl(foo)
+function [ Data, Info ] = kdrsdl( X, varargin)
 ```
+
+`Data` and `Info` are structures that contain, respectively, the recovered components of the decomposition, and some information to monitor convergence (number of iterations and value of the stopping criterion at each step).
 
 ## Background subtraction experiments
 
