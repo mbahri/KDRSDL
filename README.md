@@ -10,15 +10,87 @@ This code has been adapted from my MSc thesis work at Imperial College (summer o
 * Matlab (tested on Matlab 2015a and later)
 * Image Processing Toolbox for noise generation (`imnoise`)
 * Control System Toolbox for discrete-time Silverster's equation solver (`dlyap`)
+* Optional: Parallel Computing Toolbox
 
 ## How to use the code
 
-The main function is kdrsdl.
+The main function is `kdrsdl`.
 ```matlab
 function [ Data, Info ] = kdrsdl( X, varargin)
 ```
 
 `Data` and `Info` are structures that contain, respectively, the recovered components of the decomposition, and some information to monitor convergence (number of iterations and value of the stopping criterion at each step).
+
+The `Experiments` folder contains sample data sets along with helper functions.
+
+### Parameters
+Reference of the supported options.
+#### 'r' (integer)
+Upper-bound on the mode-1 and mode-2 ranks, the maximum dimension of the code matrices `Rn` is `r*r`. Defaults to `min(m, n)` for `m*n` matrices.
+#### 'lambda' (double)
+The `lambda` parameter in the optimization problem. Defaults to `1 / sqrt(N * max(m, n))` for `m*n*N` tensors.
+#### 'tol' (double)
+Tolerance for convergence, the algorithm will stop when the stopping criterion is `< tol`. Defaults to `1e-7`.
+#### 'maxiter' (integer)
+Maximum number of iterations. Defaults to `150`.
+#### 'rho' (double)
+The multiplicative factor by which the dual-steps `mu` and `mu_k` are increased. Defaults to `1.2`
+#### 'enforce_monotonicity' (boolean)
+If true, the algorithm will stop as soon as the reconstruction error increases (regardless of weather it would have later decreased). Defaults to `false`
+#### 'alpha_a' (double)
+Allows giving a weight different from 1 to `||A||_F^2` in the optimization problem. Defaults to `1`.
+#### 'alpha_b' (double)
+Allows giving a weight different from 1 to `||B||_F^2` in the optimization problem. Defaults to `1`.
+#### 'alpha' (double)
+The `alpha` parameter in the optimization problem. Defaults to `1e-2`.
+#### 'mu' (double)
+Allows overriding the initialization of `mu`.
+#### 'ground_o' (array of doubles)
+Allows feeding in the ground-truth low-rank tensor (useful to write visualizations to monitor training).
+#### 'ground_e' (array of doubles)
+Allows feeding in the ground-truth sparse tensor (useful to write visualizations to monitor training).
+#### 'mean' (boolean)
+Robustly estimate the sample mean (see last section of this readme). Defaults to `false`
+#### 'parallel' (boolean)
+Run some of the updates in parallel with the _Matlab Parallel Computing Toolbox_. Used for computations that are identical and independent on all frontal slices of a tensor. Default to `false` (**warning: enabling it may actually lead to decreased performance due to overhead**).
+#### 'time' (boolean)
+Level of details with which to display timing information.
+* 0: No timing
+* 1: Display time taken by each iteration
+* 2: Add time spent in intialization to 1
+* 3: Add time spent updating the codes `R` to 2, notifies when `A`, `B`, `E` have been updated
+
+### Denoising experiments
+
+We provide both the _Yale-B_ and _Facade_ benchmarks, the procedure is the same in both cases:
+```matlab
+% Load the original and noisy image(s)
+% [Original, Noisy] = yale_sp(rescaling_factor, noise_level)
+% Call facade_sp for the Facade benchmark
+
+[O, X] = yale_sp(1, 0.3);
+
+% See parameters section for the supported options
+[Data, Info] = kdrsdl(X);
+
+% Display reconstruction
+imshow(Data.L(:,:,1), []);
+```
+
+### Background subtraction experiments
+
+We provide the _Hall_ data set and two ground-truth frames.
+```matlab
+% Load the frames and the ground-truth
+load_hall
+% There are now three variables:
+% * O: The frames
+% * GT: The ground-truth frames
+% * GT_frames: The ids of the two frames that match the ground truth
+
+% See below for explanations about the mean parameter
+[Data, Info] = kdrsdl(O, 'mean', 1)
+```
 
 ## Background subtraction experiments
 
