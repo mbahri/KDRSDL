@@ -38,7 +38,7 @@ vars.mu_k = init_mu_with_norms(vars.R, 1.25, params);
 
 Data.A = Out.A;
 Data.B = Out.B;
-Data.R = Out.K; % Replacing by Out.R doesn't change much, but the soft-thresholding operator is applied to K
+Data.R = Out.K; % Replacing by Out.R doesn't change much, but the soft-thresholding operator returns K
 Data.E = Out.E;
 
 if params.MEAN
