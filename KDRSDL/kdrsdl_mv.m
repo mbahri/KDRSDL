@@ -1,5 +1,5 @@
-function [ Data, Info ] = kdrsdl( X, varargin)
-%KDRSDL Kronecker-Decomposable Sparse Dictionary Learning
+function [ Data, Info ] = kdrsdl_mv( X, MV, varargin)
+%KDRSDL_MV KDRSDL with missing values
 % min (1/2)*(alpha_a*||A||_F^2 + alpha_b*||B||_F^2 + 
 %                   alpha*sum(||Rn||_1) + sum(labmda_n*||En||_1)
 % s.t for all n Xn = ARnB^T + En
@@ -21,13 +21,17 @@ params.alpha = 1e-2;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Update functions overrides
-% None
+params.update_E = @(vars, params) (...
+    update_E_mv(vars, params)...
+);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Additional variables and overrides
 vars.K = vars.R;
 vars.Yt = zeros(params.r, params.r, params.Nobs);
-params.MV = false;
+vars.Omega_bar = MV;
+vars.Omega = ones(size(MV)) - MV;   % Mask of observed values
+params.MV = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Additional penalty parameters and overrides
@@ -36,6 +40,9 @@ vars.mu_k = init_mu_with_norms(vars.R, 1.25, params);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Algorithm and specific output values
 [Out, Info] = kdrsdl_core(vars, params);
+
+% Assume zero where no observation was made
+Out.E(vars.Omega_bar) = 0;
 
 Data.A = Out.A;
 Data.B = Out.B;

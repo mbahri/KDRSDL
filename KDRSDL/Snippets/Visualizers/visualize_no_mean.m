@@ -10,6 +10,10 @@ Uc = vars.A;
 Ur = vars.B;
 T = vars.K;
 
+if params.MV
+    vars.E(vars.Omega_bar) = 0;
+end
+
 subplot(2,3,1), imshow(vars.X(:,:,1), []), title('First image')
 subplot(2,3,2), imshow(Uc*T(:,:,1)*Ur', []), title('First reconstruction')
 subplot(2,3,3), imshow(vars.E(:,:,1), []), title('First outliers')
