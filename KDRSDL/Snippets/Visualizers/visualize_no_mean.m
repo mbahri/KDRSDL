@@ -8,7 +8,7 @@ function [ ] = visualize_no_mean( vars, params )
 
 Uc = vars.A;
 Ur = vars.B;
-T = vars.K;
+T = vars.R;
 
 subplot(2,3,1), imshow(vars.X(:,:,1), []), title('First image')
 subplot(2,3,2), imshow(Uc*T(:,:,1)*Ur', []), title('First reconstruction')

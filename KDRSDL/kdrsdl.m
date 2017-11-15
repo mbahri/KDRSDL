@@ -25,12 +25,12 @@ params.alpha = 1e-2;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Additional variables and overrides
-vars.K = vars.R;
-vars.Yt = zeros(params.r, params.r, params.Nobs);
+% vars.K = vars.R;
+% vars.Yt = zeros(params.r, params.r, params.Nobs);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Additional penalty parameters and overrides
-vars.mu_k = init_mu_with_norms(vars.R, 1.25, params);
+% vars.mu_k = init_mu_with_norms(vars.R, 1.25, params);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Algorithm and specific output values
@@ -38,7 +38,7 @@ vars.mu_k = init_mu_with_norms(vars.R, 1.25, params);
 
 Data.A = Out.A;
 Data.B = Out.B;
-Data.R = Out.K; % Replacing by Out.R doesn't change much, but the soft-thresholding operator is applied to K
+Data.R = Out.R; % Replacing by Out.R doesn't change much, but the soft-thresholding operator is applied to K
 Data.E = Out.E;
 
 if params.MEAN
