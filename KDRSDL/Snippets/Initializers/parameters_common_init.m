@@ -85,8 +85,8 @@ if params.mu < 0
     params.mu = init_mu_with_norms(vars.X, 1.25, params);
 end
 % Default upper bound on the penalty
-params.mu_bar = inf;
-% params.mu_bar = 1e9*params.mu;
+% params.mu_bar = inf;
+params.mu_bar = 1e9*params.mu;
 end
 
 function [st] = set_if_unset(st, names, values)

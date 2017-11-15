@@ -1,5 +1,5 @@
-function [ Data, Info ] = kdrsdl( X, varargin)
-%KDRSDL Kronecker-Decomposable Sparse Dictionary Learning
+function [ Data, Info ] = kdrsdl_pro_lin( X, varargin)
+%KDRSDL_PRO_LIN Kronecker-Decomposable Sparse Dictionary Learning
 % min (1/2)*(alpha_a*||A||_F^2 + alpha_b*||B||_F^2 + 
 %                   alpha*sum(||Rn||_1) + sum(labmda_n*||En||_1)
 % s.t for all n Xn = ARnB^T + En
@@ -21,16 +21,24 @@ params.alpha = 1e-2;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Update functions overrides
-% None
+params.update_A = @(vars, params) (...
+    update_A_Fro_lin(vars, params)...
+);
+params.update_B = @(vars, params) (...
+    update_B_Fro_lin(vars, params)...
+);
+params.update_RY = @(vars, params) (...
+    update_RY_regR_L1_pro(vars, params) ...
+);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Additional variables and overrides
-% vars.K = vars.R;
-% vars.Yt = zeros(params.r, params.r, params.Nobs);
+vars.K = vars.R;
+vars.Yt = zeros(params.r, params.r, params.Nobs);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Additional penalty parameters and overrides
-% vars.mu_k = init_mu_with_norms(vars.R, 1.25, params);
+vars.mu_k = init_mu_with_norms(vars.R, 1.25, params);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Algorithm and specific output values
@@ -38,9 +46,7 @@ params.alpha = 1e-2;
 
 Data.A = Out.A;
 Data.B = Out.B;
-
-Data.R = Out.R; % Replacing by Out.R doesn't change much, but the soft-thresholding operator is applied to K
-
+Data.R = Out.K; % Replacing by Out.R doesn't change much, but the soft-thresholding operator returns K
 Data.E = Out.E;
 
 if params.MEAN
