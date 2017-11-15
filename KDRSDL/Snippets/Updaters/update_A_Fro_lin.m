@@ -6,7 +6,7 @@ function [ vars ] = update_A_Fro_lin( vars, params )
 %
 % Last modified August, 2017
 
-fprintf('%f\n', norm(vars.A, 'fro'));
+% fprintf('%f\n', norm(vars.A, 'fro'));
 
 S = vars.S;
 T = vars.R;

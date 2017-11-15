@@ -45,8 +45,11 @@ vars.Y_v = zeros(params.m, params.r);
 %% Additional penalty parameters and overrides
 vars.mu_k = init_mu_with_norms(vars.R, 1.25, params);
 
-vars.mu_u = 1e-3;
-vars.mu_v = 1e-3;
+% vars.mu_u = 1e-3;
+% vars.mu_v = 1e-3;
+
+vars.mu_u = 1.25 / norm(vars.U, 'fro');
+vars.mu_v = 1.25 / norm(vars.V, 'fro');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Algorithm and specific output values

@@ -4,7 +4,7 @@ function [vars] = update_A_Fro_split(vars, params)
 % Mehdi Bahri - Imperial College London
 % November, 2017
 
-fprintf('%f\n', norm(vars.A, 'fro'));
+% fprintf('%f\n', norm(vars.A, 'fro'));
 
 % S = vars.S;
 % T = vars.T;
