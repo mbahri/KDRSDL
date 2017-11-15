@@ -28,7 +28,7 @@ params.update_B = @(vars, params) (...
     update_B_Fro_split(vars, params)...
 );
 params.update_RY = @(vars, params) (...
-    update_RY_regR_L1_pro(vars, params) ...
+    update_RY_regR_L1_pro_lin(vars, params) ...
 );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -57,7 +57,7 @@ vars.mu_v = 1.25 / norm(vars.V, 'fro');
 
 Data.A = Out.A;
 Data.B = Out.B;
-Data.R = Out.K; % Replacing by Out.R doesn't change much, but the soft-thresholding operator returns K
+Data.R = Out.R; % Replacing by Out.R doesn't change much, but the soft-thresholding operator returns K
 Data.E = Out.E;
 
 if params.MEAN
