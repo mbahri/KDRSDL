@@ -40,9 +40,9 @@ RR = ttm(tensor(vars.R), {Uc'*Uc, Ur'*Ur}, [1, 2]);
 Delta = ttm(tensor(vars.Xt + vars.Y ./ mu), {Uc', Ur'}, [1, 2]);
 
 if params.DEGREE_3_REG
-    shrink_cst = alpha * norm(vars.A, 'fro') * norm(vars.B, 'fro') /mu_k;
+    shrink_cst = alpha * norm(vars.A, 'fro') * norm(vars.B, 'fro') /mu;
 else
-    shrink_cst = alpha / mu_k;
+    shrink_cst = alpha / mu;
 end
 
 R1 = soft_shrinkage(vars.R - (RR.data - Delta.data) / ( norm(Uc)^2 * norm(Ur)^2 ), shrink_cst);

@@ -1,5 +1,5 @@
-function [ emax ] = stop_max_error( vars, params )
-%STOP_MAX_ERROR Computes the maximum reconstruction error of the slices
+function [ emax ] = stop_max_error_lin( vars, params )
+%STOP_MAX_ERROR_LIN Computes the maximum reconstruction error of the slices
 %
 % Mehdi Bahri - Imperial College London
 % April, 2016
@@ -10,11 +10,10 @@ X = vars.X;
 Xt = vars.Xt;   % Xt is X - E or X - E - M as needed
 
 e_slice = -inf;
-e_core = -inf;
 
 Uc = vars.A;
 Ur = vars.B;
-T = vars.K;
+T = vars.R;
 
 % Reconstruction error defined as the max reconstruction error of the
 % individual slices
@@ -23,12 +22,7 @@ for k=1:params.Nobs
         Uc, Ur, e_slice);
 end
 
-% Splitting error on the core
-for k=1:params.Nobs
-    e_core = max(e_core, matrix_relative_error(vars.K(:,:,k), vars.R(:,:,k)));
-end
-
-emax = max([e_slice, e_core]);
+emax = max(e_slice);
 
 end
 

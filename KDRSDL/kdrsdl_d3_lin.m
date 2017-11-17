@@ -1,4 +1,4 @@
-function [ Data, Info ] = kdrsdl_pro_lin( X, varargin)
+function [ Data, Info ] = kdrsdl_d3_lin( X, varargin)
 %KDRSDL_PRO_LIN Kronecker-Decomposable Sparse Dictionary Learning
 % min (1/2)*(alpha_a*||A||_F^2 + alpha_b*||B||_F^2 + 
 %                   alpha*sum(||Rn||_1) + sum(labmda_n*||En||_1)
@@ -13,7 +13,9 @@ function [ Data, Info ] = kdrsdl_pro_lin( X, varargin)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Defaults for this algorithm
-params.alpha = 1e-2;
+params.alpha = 1e-11;
+params.rho = 1.01;
+params.mu = 0.5;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Shared behaviour and default parameter initalization
@@ -28,8 +30,12 @@ params.update_B = @(vars, params) (...
     update_B_Fro_lin(vars, params)...
 );
 params.update_RY = @(vars, params) (...
-    update_RY_regR_L1_pro(vars, params) ...
+    update_RY_regR_L1_lin(vars, params) ...
 );
+params.stopping_criterion = @(vars, params) (...
+    stop_max_error_lin(vars, params) ...
+);
+params.DEGREE_3_REG = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Additional variables and overrides
@@ -46,7 +52,7 @@ vars.mu_k = init_mu_with_norms(vars.R, 1.25, params);
 
 Data.A = Out.A;
 Data.B = Out.B;
-Data.R = Out.K; % Replacing by Out.R doesn't change much, but the soft-thresholding operator returns K
+Data.R = Out.R; % Replacing by Out.R doesn't change much, but the soft-thresholding operator returns K
 Data.E = Out.E;
 
 if params.MEAN
