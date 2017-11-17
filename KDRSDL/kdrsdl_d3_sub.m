@@ -1,5 +1,5 @@
-function [ Data, Info ] = kdrsdl_pro_split( X, varargin)
-%KDRSDL_PRO_SPLIT Kronecker-Decomposable Sparse Dictionary Learning
+function [ Data, Info ] = kdrsdl_d3_sub( X, varargin)
+%KDRSDL_D3_SUB Kronecker-Decomposable Sparse Dictionary Learning
 % min (1/2)*(alpha_a*||A||_F^2 + alpha_b*||B||_F^2 + 
 %                   alpha*sum(||Rn||_1) + sum(labmda_n*||En||_1)
 % s.t for all n Xn = ARnB^T + En
@@ -13,7 +13,7 @@ function [ Data, Info ] = kdrsdl_pro_split( X, varargin)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Defaults for this algorithm
-params.alpha = 1e-2;
+params.alpha = 1e-11;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Shared behaviour and default parameter initalization
@@ -22,14 +22,15 @@ params.alpha = 1e-2;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Update functions overrides
 params.update_A = @(vars, params) (...
-    update_A_Fro_split(vars, params)...
+    update_A_Fro_sub(vars, params)...
 );
 params.update_B = @(vars, params) (...
-    update_B_Fro_split(vars, params)...
+    update_B_Fro_sub(vars, params)...
 );
-params.update_RY = @(vars, params) (...
-    update_RY_regR_L1_pro(vars, params) ...
-);
+% params.update_RY = @(vars, params) (...
+%     update_RY_regR_L1_d3_sub(vars, params) ...
+% );
+params.DEGREE_3_REG = true;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Additional variables and overrides

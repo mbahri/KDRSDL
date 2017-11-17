@@ -1,4 +1,4 @@
-function [vars] = update_RY_regR_L1(vars, params)
+function [vars] = update_RY_regR_L1_sub(vars, params)
 %UPDATE_RY_REGR_L1 Solves for R, L1 penalty
 %
 % Mehdi Bahri - Imperial College London
@@ -34,7 +34,15 @@ for k=1:params.Nobs
    R1(:,:,k) = dlyap(U, V, red_S(:,:,k));
 end
 
-K1 = soft_shrinkage(R1 - Yt / mu_k, alpha/mu_k);
+if params.DEGREE_3_REG
+    shrink_cst = alpha * norm(vars.A, 'fro') * norm(vars.B, 'fro') /mu_k;
+    deg = 3;
+else
+    shrink_cst = alpha / mu_k;
+    deg = 2;
+end
+
+K1 = soft_shrinkage(R1 - Yt / mu_k, shrink_cst);
 
 vars.R = R1;
 vars.K = K1;
@@ -48,7 +56,7 @@ vars.mu_k = params.rho * vars.mu_k;
 
 if params.TIME > 2
     up_t_time = toc;
-    fprintf('Updated L1 regularized R in %fs (TT)\n', up_t_time);
+    fprintf('Updated L1 regularized R in %fs (TT) with d=%d\n', up_t_time, deg);
 end
 
 end

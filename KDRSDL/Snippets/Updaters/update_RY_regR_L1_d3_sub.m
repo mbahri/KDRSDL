@@ -1,4 +1,4 @@
-function [vars] = update_RY_regR_L1_pro(vars, params)
+function [vars] = update_RY_regR_L1_d3_sub(vars, params)
 %UPDATE_RY_REGR_L1_PRO Solves for R, L1 penalty
 %
 % Mehdi Bahri - Imperial College London
