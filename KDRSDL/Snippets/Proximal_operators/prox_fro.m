@@ -13,8 +13,8 @@ if lambda == 0
 else
     X = double(X);
     [U, S, V] = svd(X, 'econ');
-    S = diag(prox_l2(diag(S), lambda));
-%     S = diag(soft_shrinkage(diag(S), lambda));
+%     S = diag(prox_l2(diag(S), lambda));
+    S = diag(soft_shrinkage(diag(S), lambda));
     
     Y = U * S * V';
 end

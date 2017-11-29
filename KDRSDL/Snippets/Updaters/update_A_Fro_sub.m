@@ -27,16 +27,29 @@ function [vars] = update_A_Fro_sub(vars, params)
 % vars.Y_c = Y_c + vars.mu_c * (vars.A - Uc); % Need to check the sign
 % vars.mu_c = params.rho*vars.mu_c;
 
-VV = vars.V'*vars.V;
-Sum_kvvk = zeros(params.r, params.r);
-for k=1:params.Nobs
-    Sum_kvvk = Sum_kvvk + vars.R(:,:,k)*VV*vars.R(:,:,k)';
-end
+% VV = vars.V'*vars.V;
+% Sum_kvvk = zeros(params.r, params.r);
+% RR = vars.R;
+% for k=1:params.Nobs
+%     Sum_kvvk = Sum_kvvk + RR(:,:,k)*VV*RR(:,:,k)';
+% end
+% 
+% Red_S = zeros(size(vars.A));
+% SS = vars.S;
+% V = vars.V;
+% for k=1:params.Nobs
+%     Red_S = Red_S + SS(:,:,k)*V*RR(:,:,k)';
+% end
 
-Red_S = zeros(size(vars.A));
-for k=1:params.Nobs
-    Red_S = Red_S + vars.S(:,:,k)*vars.V*vars.R(:,:,k)';
-end
+RV = reshape( ...
+        ttm(tensor(vars.R), {vars.V}, 2), ...
+        [size(vars.R, 2), size(vars.V, 1) * size(vars.R, 3)] ...
+);
+RV = RV.data;
+
+Sum_kvvk = RV * RV';
+
+Red_S = reshape(vars.S, [size(vars.S, 1), size(vars.S, 2)*size(vars.S, 3)]) * RV';
 
 vars.U = dlyap(...
     eye(size(vars.U, 1)), ...
@@ -49,6 +62,9 @@ vars.U = dlyap(...
 vars.A = prox_fro(vars.U - vars.Y_u / vars.mu_u, ...
     params.alpha * norm(vars.B, 'fro') * l1_norm(vars.K) / vars.mu_u ...
 );
+
+vars.Y_u = vars.Y_u + vars.mu_u * (vars.A - vars.U); % Need to check the sign
+vars.mu_u = params.rho*vars.mu_u;
 
 if params.TIME > 2
     fprintf('A updated split %f\n', norm(vars.A, 'fro'));
