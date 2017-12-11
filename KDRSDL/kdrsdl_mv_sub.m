@@ -1,4 +1,4 @@
-function [ Data, Info ] = kdrsdl_mv( X, MV, varargin)
+function [ Data, Info ] = kdrsdl_mv_sub( X, MV, varargin)
 %KDRSDL_MV KDRSDL with missing values
 % min (1/2)*(alpha_a*||A||_F^2 + alpha_b*||B||_F^2 + 
 %                   alpha*sum(||Rn||_1) + sum(labmda_n*||En||_1)
@@ -25,13 +25,18 @@ params.update_E = @(vars, params) (...
     update_E_mv(vars, params)...
 );
 
+% params.update_RY = @(vars, params) (...
+%     update_RY_regR_L1_lin(vars, params) ...
+% );
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Additional variables and overrides
 vars.K = vars.R;
 vars.Yt = zeros(params.r, params.r, params.Nobs);
-vars.Omega_bar = MV;
-vars.Omega = ones(size(MV)) - MV;   % Mask of observed values
+vars.Omega_bar = boolean(MV);
+vars.Omega = boolean(ones(size(MV)) - MV);   % Mask of observed values
 params.MV = true;
+params.DEGREE_3_REG = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Additional penalty parameters and overrides

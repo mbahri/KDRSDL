@@ -71,7 +71,10 @@ while ~converged && niter < params.MAXITER
     end
     fprintf('[%03d] mu = %f max error = %g | rk(A, 1e-3) = %d rk(B, 1e-3) = %d | %fs\n', ...
             niter, params.mu, EE, estim_rank(vars.A, 1e-3), estim_rank(vars.B, 1e-3), itertime);
-    params.visualize(vars, params);
+    
+    if isfield(params, 'do_visualize') && params.do_visualize
+        params.visualize(vars, params);
+    end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
