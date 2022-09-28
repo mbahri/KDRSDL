@@ -5,6 +5,8 @@ Author: [Mehdi Bahri](http://bahri.io)
 
 This code has been adapted from my MSc thesis work at Imperial College (summer of 2016).
 
+Python implementation: [https://github.com/mbahri/RKCA](https://github.com/mbahri/RKCA).
+
 ## Requirements
 
 * Matlab (tested on Matlab 2015a and later)
